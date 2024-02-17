@@ -1,7 +1,6 @@
 # To use this, you'll first have to have loaded EleutherAI/gpt-j-6B (or other model) as 'GPTmodel', along with its tokenizer as 'tokenizer' and its shape embeddings tensor as 'embeddings'
 # You'll also need to specify 'save_directory'
 
-
 import os
 import json
 import torch
