@@ -87,7 +87,7 @@ with open(json_file_path, 'r') as file:
 max_weight, min_weight = find_max_min_cumulative_weight(data)
 
 # Now that you've got the correct part of the JSON, pass it to the function
-output_path_png = create_tree_diagram(data, directory, json_file.split('.')[0], flog_base, max_weight, min_weight)
+output_path_png = create_tree_diagram(data, directory, json_file.split('.')[0], log_base, max_weight, min_weight)
 
 # Add white background
 input_path = output_path_png
