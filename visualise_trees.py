@@ -27,7 +27,7 @@ def find_max_min_cumulative_weight(node, current_max=0, current_min=float('inf')
         current_max, current_min = find_max_min_cumulative_weight(child, current_max, current_min)
     return current_max, current_min
 
-def create_tree_diagram(data, directory, name, token, log_base, max_thickness=33, min_thickness=1):
+def create_tree_diagram(data, directory, name, log_base, max_thickness=33, min_thickness=1):
 
     max_weight, min_weight = find_max_min_cumulative_weight(data)
 
@@ -48,25 +48,25 @@ def create_tree_diagram(data, directory, name, token, log_base, max_thickness=33
         return scaled_weight
 
 
-    def add_nodes_edges(dot, node, token, max_weight, min_weight, parent=None, is_root=True, depth=0):
+    def add_nodes_edges(dot, node, name, max_weight, min_weight, parent=None, is_root=True, depth=0):
         node_id = str(id(node))  # Unique ID for the node based on its memory address
 
         if parent and not is_root:
             edge_weight = scale_edge_width(node.get('cumulative_prob', 0), max_weight, min_weight, log_base)  # Pass max_weight and min_weight here
             dot.edge(parent, node_id, arrowhead='dot', arrowsize='1', color='darkblue', penwidth=str(edge_weight))
 
-        label = node.get('token', 'ROOT') if not is_root else "'" + token + "'"
+        label = node.get('token', 'ROOT') if not is_root else "'" + name + "'"
         dot.node(node_id, label=label, shape='plaintext', fontsize='36', fontname='Helvetica')
 
         for child in node.get('children', []):
             # Recursive call with max_weight and min_weight
-            add_nodes_edges(dot, child, token, max_weight, min_weight, parent=node_id, is_root=False, depth=depth+1)
+            add_nodes_edges(dot, child, name, max_weight, min_weight, parent=node_id, is_root=False, depth=depth+1)
 
 
     dot = Digraph(comment='Definition Tree', format='png')
     dot.attr(rankdir='LR', size='8,8', margin='0.2', nodesep='0.06', ranksep='5', dpi=600, bgcolor='white')      # Increasing the DPI may be necessary for very large trees generated with very small cutoff
 
-    add_nodes_edges(dot, data, token, max_weight, min_weight)  # Start recursion with the root node
+    add_nodes_edges(dot, data, name, max_weight, min_weight)  # Start recursion with the root node
 
     output_file_path = os.path.join(directory, 'output_tree_diagram_' + name)
     output_path = dot.render(filename=output_file_path, cleanup=True)
@@ -87,7 +87,7 @@ with open(json_file_path, 'r') as file:
 max_weight, min_weight = find_max_min_cumulative_weight(data)
 
 # Now that you've got the correct part of the JSON, pass it to the function
-output_path_png = create_tree_diagram(data, directory, json_file.split('.')[0], arcanum, log_base, max_weight, min_weight)
+output_path_png = create_tree_diagram(data, directory, json_file.split('.')[0], flog_base, max_weight, min_weight)
 
 # Add white background
 input_path = output_path_png
