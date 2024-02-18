@@ -2,6 +2,7 @@ import os
 import json
 import argparse
 from transformers import AutoModelForCausalLM, AutoTokenizer
+import torch
 
 from definition_trees import mainfunction
 
@@ -24,6 +25,10 @@ def main():
     # Load the model and tokenizer using Auto classes
     tokenizer = AutoTokenizer.from_pretrained(full_model_name)
     model = AutoModelForCausalLM.from_pretrained(full_model_name)
+
+    # Check if CUDA available
+    device = "cuda" if torch.cuda.is_available() else "cpu"
+    model.to(device)
 
     # The rest of the code from definition_trees.py should be integrated here
     # For example, you can call the mainfunction and pass the loaded model and tokenizer
