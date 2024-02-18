@@ -16,7 +16,7 @@ model_name_dict = {
 
 def main():
     parser = argparse.ArgumentParser(description='Run definition trees script.')
-    parser.add_argument('model_name', help='Name of the model to use.')
+    parser.add_argument('model_name', default='gptj', type=str, help='Model name or shorthand (e.g. gptj, mistral)')
     args = parser.parse_args()
 
     # Look up the full model name from the dictionary if shorthand is provided
@@ -45,7 +45,7 @@ def main():
     # Set up other necessary variables (these may need to be adjusted or provided as arguments)
     save_directory = '/path/to/save/directory'  # Set the directory where the JSON trees will be saved
     topk = 5  # Top K probabilities to consider
-    cutoff = 0.00001  # Probability cutoff for tree expansion
+    cutoff = 0.01  # Probability cutoff for tree expansion
     noken = embeddings.mean(dim=0)  # Use the mean embedding as a placeholder
     prompt = "A typical definition of '_' would be '"  # Base prompt for the model
 
@@ -60,7 +60,8 @@ def main():
     with open(file_path, 'w') as file:
         json.dump(results_dict, file, ensure_ascii=False, indent=4)
 
-
     print(f"Saved results_dict to {file_path}")
+
+
 if __name__ == "__main__":
     main()

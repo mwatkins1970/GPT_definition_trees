@@ -11,3 +11,10 @@ Increasing the DPI may be necessary for very large trees generated with very sma
     
     dot.attr(rankdir='LR', size='8,8', margin='0.2', nodesep='0.06', ranksep='5', dpi=600, bgcolor='white')      
     
+
+
+You can run it with
+```
+pip install -r requirements.txt
+python main.py
+```
