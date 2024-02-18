@@ -48,7 +48,7 @@ def main():
     deftree_data = {"level": 0, "token": "", "cumulative_prob": 1, "children": []}
 
     # Run the main function from definition_trees.py
-    results_dict = mainfunction(deftree_data, topk, prompt, noken, model, tokenizer)
+    results_dict = mainfunction(deftree_data, topk, prompt, noken, model, tokenizer, cutoff)
 
     # Save the results
     file_path = os.path.join(save_directory, 'results.json')

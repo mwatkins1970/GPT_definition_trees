@@ -55,7 +55,7 @@ def produce_next_token_probs(prompt, noken, GPTmodel, tokenizer, topk):
     top_k_probs = dict(sorted(prob_distribution.items(), key=lambda item: item[1], reverse=True)[:topk])
     return top_k_probs
 
-def build_def_tree(token, data, base_prompt, noken, GPTmodel, tokenizer, topk, path="", visited=None):
+def build_def_tree(token, data, base_prompt, noken, GPTmodel, tokenizer, topk, cutoff, path="", visited=None):
     if visited is None:
         visited = set()
     visited.add(path)
@@ -70,7 +70,7 @@ def build_def_tree(token, data, base_prompt, noken, GPTmodel, tokenizer, topk, p
             continue
         new_child = {"token": tok, "cumulative_prob": prob * data['cumulative_prob'], "children": []}
         data['children'].append(new_child)
-        build_def_tree(tok, new_child, base_prompt, noken, GPTmodel, tokenizer, topk, child_path, visited)
+        build_def_tree(tok, new_child, base_prompt, noken, GPTmodel, tokenizer, topk, cutoff, child_path, visited)
 
     return data
 
@@ -93,9 +93,9 @@ def find_cumulative_probability(tree, target_def, tokenizer):
         current_node = next_node
     return current_node.get('cumulative_prob', 0)
 
-def mainfunction(data, topk, prompt, noken, GPTmodel, tokenizer):
+def mainfunction(data, topk, prompt, noken, GPTmodel, tokenizer, cutoff):
     results_dict = {}
-    tree_json = build_def_tree("", data, prompt, noken, GPTmodel, tokenizer, topk)
+    tree_json = build_def_tree("", data, prompt, noken, GPTmodel, tokenizer, topk, cutoff)
     results_dict["tree JSON"] = tree_json
 
     print("RESULTS DICT:", results_dict)
