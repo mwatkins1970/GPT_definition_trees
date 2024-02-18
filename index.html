@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tree Visualizer</title>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.css" rel="stylesheet" type="text/css" />
+    <style>
+        #mynetwork {
+            width: 100%;
+            height: 600px;
+            border: 1px solid lightgray;
+        }
+    </style>
+</head>
+<body>
+
+<div>
+    <input type="file" id="fileInput" accept=".json">
+</div>
+<div id="mynetwork"></div>
+
+<script>
+    // Create a network
+    var container = document.getElementById('mynetwork');
+    var data = {
+        nodes: new vis.DataSet([]),
+        edges: new vis.DataSet([])
+    };
+    var options = {};
+    var network = new vis.Network(container, data, options);
+
+    document.getElementById('fileInput').addEventListener('change', function(event) {
+        var input = event.target;
+
+        if ('files' in input && input.files.length > 0) {
+            var reader = new FileReader();
+            reader.onload = function() {
+                var json = JSON.parse(reader.result);
+                visualizeTree(json);
+            };
+            reader.readAsText(input.files[0]);
+        }
+    });
+
+    function visualizeTree(json) {
+        // Assuming json structure is similar to the one used in the provided script
+        var nodes = [];
+        var edges = [];
+
+        function traverse(node, parent = null) {
+            if (node) {
+                nodes.push({ id: node.id, label: node.token || 'ROOT', shape: 'box' });
+                if (parent) {
+                    edges.push({ from: parent.id, to: node.id });
+                }
+                if (node.children) {
+                    node.children.forEach(function(child) {
+                        traverse(child, node);
+                    });
+                }
+            }
+        }
+
+        traverse(json); // Start the traversal with the root node
+
+        // Update vis.js data
+        data.nodes.update(nodes);
+        data.edges.update(edges);
+    }
+</script>
+
+</body>
+</html>
