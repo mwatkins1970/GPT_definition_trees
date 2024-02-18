@@ -100,29 +100,3 @@ def mainfunction(data, topk, prompt, noken, GPTmodel, tokenizer):
 
     print("RESULTS DICT:", results_dict)
     return results_dict
-
-save_directory = '/content/Drive/My Drive/DefinitionTrees/'     # This will have to be changed as appropriate
-
-embeddings = embeddings[:50257]
-token_strings, all_rom_token_indices, all_rom_token_gt2_indices = token_setup(tokenizer)
-centroid = torch.mean(embeddings, dim=0)
-
-topk = 5
-
-cutoff = 0.00001   # This it the threshold which, if cumulative product of probabilities drops below it, the branch ends.
-                   # So making it smaller will result in a denser tree, more branches, but will take longer and use more compute. 
-  
-noken = centroid   # OR set noken to any shape [4096] tensor
-                   # For an actual token, e.g. broccoli, you can use noken = embeddings(token_strings.index(' broccoli')
-
-prompt = f"A typical definition of '_' would be '"
-
-deftree_data = {"level": 0, "token": "", "cumulative_prob": 1, "children": []}
-
-results_dict = mainfunction(deftree_data, topk, prompt, noken, GPTmodel, tokenizer)
-
-file_path = os.path.join(save_directory, 'results.json')
-with open(file_path, 'w') as file:
-    json.dump(results_dict, file, ensure_ascii=False, indent=4)
-
-print(f"Saved results_dict to {file_path}")
