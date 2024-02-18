@@ -53,6 +53,9 @@ def produce_next_token_probs(prompt, noken, GPTmodel, tokenizer, topk):
     total_tokens = len(softmax_probs)
     prob_distribution = {tokenizer.decode([i]): softmax_probs[i].item() for i in range(total_tokens)}
     top_k_probs = dict(sorted(prob_distribution.items(), key=lambda item: item[1], reverse=True)[:topk])
+
+    custom_embedding.remove_modifications()
+    
     return top_k_probs
 
 def build_def_tree(token, data, base_prompt, noken, GPTmodel, tokenizer, topk, path="", visited=None):
